@@ -2,6 +2,7 @@
 import voluptuous as vol
 from homeassistant import config_entries, core
 from pymoof.tools import retrieve_encryption_key
+from homeassistant.helpers import async_add_executor_job
 
 class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
     """Handle a Moof config flow."""
@@ -14,7 +15,7 @@ class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
             password = user_input.get("password")
 
             # Retrieve encryption key
-            key = await retrieve_encryption_key.query(username, password)
+            key = await async_add_executor_job(retrieve_encryption_key.query, username, password)
 
             if key:
                 # List bikes
