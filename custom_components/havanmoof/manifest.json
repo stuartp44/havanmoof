@@ -2,7 +2,7 @@
     "domain": "vanmoof",
     "name": "VanMoof Bike",
     "config_flow": true,
-    "requirements": ["bleak==0.14.1","pymoof==0.0.6"],
+    "requirements": ["pymoof==0.0.6"],
     "iot_class": "local_polling",
     "version": "0.0.1"
 }
