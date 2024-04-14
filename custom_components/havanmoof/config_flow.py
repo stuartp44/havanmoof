@@ -1,7 +1,7 @@
 """Config flow for Moof integration."""
 import voluptuous as vol
 from homeassistant import config_entries, core
-from pymoof import retrieve_encryption_key, MoofClient
+from pymoof.tools import retrieve_encryption_key
 
 class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
     """Handle a Moof config flow."""
@@ -17,11 +17,8 @@ class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
             key = await retrieve_encryption_key.query(username, password)
 
             if key:
-                # Create Moof client
-                moof_client = MoofClient(username=username, password=password, encryption_key=key)
-
                 # List bikes
-                bikes = await moof_client.list_bikes()
+                bikes = []
 
                 if bikes:
                     # Successfully retrieved bikes, create entry
