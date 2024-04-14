@@ -2,7 +2,7 @@
     "domain": "vanmoof",
     "name": "VanMoof Bike",
     "config_flow": true,
-    "requirements": ["pymoof==0.0.6"],
+    "requirements": ["git+https://github.com/stuartp44/pymoof.git@main#pymoof==0.0.7"],
     "iot_class": "local_polling",
     "version": "0.0.1"
 }
