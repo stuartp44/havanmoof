@@ -1,7 +1,7 @@
 """Config flow for Moof integration."""
 import voluptuous as vol
-from homeassistant import config_entries, core
-from pymoof.tools import retrieve_encryption_key
+from homeassistant import config_entries
+from pymoof.tools import retrieve_bikes
 import asyncio
 
 class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
@@ -15,30 +15,29 @@ class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
             password = user_input.get("password")
 
             # Retrieve encryption key
-            key = await asyncio.to_thread(retrieve_encryption_key.query, username, password)
+            bikes = await asyncio.to_thread(retrieve_bikes.query, username, password)
 
-            if key:
-                # List bikes
-                bikes = []
+            if bikes:
+                for bike in bikes:
+                    encryption_key = bike["key"]["encryptionKey"]
+                    user_key_id = bike["key"]["userKeyId"]
+                    frameNumber = bike["key"]["frameNumber"]
+                    uuid = bike["key"]["macAddress"].replace(":", "").lower(),
 
-                if bikes:
-                    # Successfully retrieved bikes, create entry
-                    return self.async_create_entry(title="Moof Integration", data=user_input)
-                else:
-                    # Unable to retrieve bikes
-                    return self.async_show_form(
-                        step_id="user",
-                        errors={"base": "Unable to retrieve bikes. Please check your credentials and try again."},
-                        data_schema=vol.Schema({
-                            vol.Required("username"): str,
-                            vol.Required("password"): str,
-                        }),
-                    )
+                    bike_data = {
+                        "encryption_key": encryption_key,
+                        "user_key_id": user_key_id,
+                        "frameNumber": frameNumber,
+                        "uuid": uuid
+                    }
+                    
+                # Create entry for the bike
+                return self.async_create_entry(title="Moof Integration", data=bike_data)
             else:
                 # Unable to retrieve encryption key
                 return self.async_show_form(
                     step_id="user",
-                    errors={"base": "Unable to retrieve encryption key. Please check your credentials and try again."},
+                    errors={"base": "Unable to retrieve bikes. Please check your credentials and try again."},
                     data_schema=vol.Schema({
                         vol.Required("username"): str,
                         vol.Required("password"): str,
