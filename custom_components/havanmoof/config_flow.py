@@ -21,8 +21,8 @@ class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
                 for bike in bikes:
                     encryption_key = bike["key"]["encryptionKey"]
                     user_key_id = bike["key"]["userKeyId"]
-                    frameNumber = bike["key"]["frameNumber"]
-                    uuid = bike["key"]["macAddress"].replace(":", "").lower(),
+                    frameNumber = bike["frameNumber"]
+                    uuid = bike["macAddress"].replace(":", "").lower(),
 
                     bike_data = {
                         "encryption_key": encryption_key,
