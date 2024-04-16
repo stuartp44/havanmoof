@@ -33,11 +33,15 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def process_discovered_service_info(hass):
     """Process discovered Bluetooth service info."""
     try:
-        # Call the function asynchronously using async_add_executor_job
-        future = hass.async_add_executor_job(bluetooth.async_discovered_service_info, hass, connectable=True)
-        # Wait for the function to complete and get the result
-        service_infos = await future
-        # Process the result
+        # Call the wrapper function asynchronously using async_add_executor_job
+        await hass.async_add_executor_job(process_discovered_service_info_in_executor, hass)
+    except Exception as e:
+        _LOGGER.error("Error processing discovered service info: %s", e)
+
+def process_discovered_service_info_in_executor(hass):
+    """Process discovered Bluetooth service info in a separate thread."""
+    try:
+        service_infos = hass.components.bluetooth.async_discovered_service_info(hass, connectable=True)
         for service_info in service_infos:
             _LOGGER.info("Discovered service info: %s", service_info)
     except Exception as e:
