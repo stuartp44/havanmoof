@@ -10,14 +10,13 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: ConfigEntry):
     """Setting up this integration using YAML is not supported."""
-    await log_devices_with_uuids(hass)
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up this integration using UI."""
     if hass.data.get(DOMAIN) is None:
         _LOGGER.info("Starting up VanMoof integration")
-
+    await log_devices_with_uuids(hass)
     # Perform any additional setup here
     return True
 
