@@ -8,6 +8,13 @@ import logging
 DOMAIN = "havanmoof"
 _LOGGER = logging.getLogger(__name__)
 
+# Define the VanMoof UUIDs
+VANMOOF_UUIDS = {
+    "6acc5540-e631-4069-944d-b8ca7598ad50",
+    "8e7f1a50-087a-44c9-b292-a2c628fdd9aa",
+    "6acb5520-e631-4069-944d-b8ca7598ad50",
+}
+
 async def async_setup(hass: HomeAssistant, config: ConfigEntry):
     """Setting up this integration using YAML is not supported."""
     return True
@@ -33,7 +40,6 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def process_discovered_service_info(hass):
     """Process discovered Bluetooth service info."""
     try:
-        # Call the wrapper function asynchronously using async_add_executor_job
         await hass.async_add_executor_job(process_discovered_service_info_in_executor, hass)
     except Exception as e:
         _LOGGER.error("Error processing discovered service info: %s", e)
@@ -43,6 +49,8 @@ def process_discovered_service_info_in_executor(hass):
     try:
         service_infos = hass.components.bluetooth.async_discovered_service_info(hass, connectable=True)
         for service_info in service_infos:
-            _LOGGER.info("Discovered service info: %s", service_info)
+            if service_info.uuid in VANMOOF_UUIDS:
+                _LOGGER.info("Discovered VanMoof Bike: UUID=%s, Address=%s, RSSI=%s",
+                             service_info.uuid, service_info.address, service_info.rssi)
     except Exception as e:
         _LOGGER.error("Error processing discovered service info: %s", e)
