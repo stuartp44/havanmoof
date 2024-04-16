@@ -1,6 +1,5 @@
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import logger as _LOGGER
 import logging
 
 """VanMoof Home Assistant"""
