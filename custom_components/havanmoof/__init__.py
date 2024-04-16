@@ -49,8 +49,9 @@ def process_discovered_service_info_in_executor(hass):
     try:
         service_infos = hass.components.bluetooth.async_discovered_service_info(hass, connectable=True)
         for service_info in service_infos:
-            if service_info.service_uuid in VANMOOF_UUIDS:
-                _LOGGER.info("Discovered VanMoof Bike: UUID=%s, Address=%s, RSSI=%s",
-                             service_info.service_uuid, service_info.address, service_info.rssi)
+            # Check if any of the service UUIDs are in the VanMoof UUIDs set
+            if any(uuid in VANMOOF_UUIDS for uuid in service_info.service_uuids):
+                _LOGGER.info("Discovered VanMoof service: UUIDs=%s, Address=%s, RSSI=%s",
+                             service_info.service_uuids, service_info.address, service_info.rssi)
     except Exception as e:
         _LOGGER.error("Error processing discovered service info: %s", e)
