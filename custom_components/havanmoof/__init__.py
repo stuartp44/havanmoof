@@ -1,10 +1,12 @@
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import logger as _LOGGER
+import logging
 
 """VanMoof Home Assistant"""
 
 DOMAIN = "havanmoof"
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: ConfigEntry):
     """Setting up this integration using YAML is not supported."""
@@ -16,7 +18,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.info("Starting up VanMoof integration")
 
     # Perform any additional setup here
-
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
@@ -27,4 +28,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Remove a config entry."""
     # Perform any additional cleanup here
-    return True 
+    return True

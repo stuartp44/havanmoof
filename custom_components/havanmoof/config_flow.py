@@ -32,7 +32,7 @@ class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
                     }
                     
                 # Create entry for the bike
-                return self.async_create_entry(title="Moof Integration", data=bike_data)
+                return self.async_create_entry(title="VanMoof Integration", data=bike_data)
             else:
                 # Unable to retrieve encryption key
                 return self.async_show_form(
