@@ -2,7 +2,7 @@
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components import bluetooth_tracker
+from homeassistant.components import bluetooth
 import logging
 
 DOMAIN = "havanmoof"
@@ -16,7 +16,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up this integration using UI."""
     if hass.data.get(DOMAIN) is None:
         _LOGGER.info("Starting up VanMoof integration")
-    await log_devices_with_uuids(hass)
+    await process_discovered_service_info(hass)
     # Perform any additional setup here
     return True
 
@@ -30,19 +30,11 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
     # Perform any additional cleanup here
     return True
 
-async def log_devices_with_uuids(hass):
-    """Scan for devices advertising specified UUIDs and log their information."""
+async def process_discovered_service_info(hass):
+    """Process discovered Bluetooth service info."""
     try:
-        # Get Bluetooth devices tracked by Home Assistant
-        devices = bluetooth_tracker.async_get_tracker(hass).async_see()
-
-        for device in devices:
-            # Check if any of the specified UUIDs are in the device's UUIDs
-            if any(uuid in device['uuid'] for uuid in [
-                "6acc5540-e631-4069-944d-b8ca7598ad50",
-                "8e7f1a50-087a-44c9-b292-a2c628fdd9aa",
-                "6acb5520-e631-4069-944d-b8ca7598ad50",
-            ]):
-                _LOGGER.info(f"Found device: {device}")
+        service_infos = await bluetooth.async_discovered_service_info(hass, connectable=True)
+        for service_info in service_infos:
+            _LOGGER.info("Discovered service info: %s", service_info)
     except Exception as e:
-        _LOGGER.error(f"Error scanning for devices: {e}")
+        _LOGGER.error("Error processing discovered service info: %s", e)
