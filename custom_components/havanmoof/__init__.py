@@ -33,7 +33,8 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def process_discovered_service_info(hass):
     """Process discovered Bluetooth service info."""
     try:
-        service_infos = await bluetooth.async_discovered_service_info(hass, connectable=True)
+        service_info_dict = await bluetooth.async_discovered_service_info(hass, connectable=True)
+        service_infos = list(service_info_dict.values())  # Convert dict_values to list
         for service_info in service_infos:
             _LOGGER.info("Discovered service info: %s", service_info)
     except Exception as e:
