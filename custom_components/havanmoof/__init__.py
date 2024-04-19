@@ -23,7 +23,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up this integration using UI."""
     if hass.data.get(DOMAIN) is None:
         _LOGGER.info("Starting up VanMoof integration")
-    await process_discovered_service_info(hass)
+    await process_discovered_service_info(hass, vanmoof_bike_uuids)
     # Perform any additional setup here
     return True
 
@@ -40,7 +40,7 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def process_discovered_service_info(hass):
     """Process discovered Bluetooth service info."""
     try:
-        await hass.async_add_executor_job(process_discovered_service_info_in_executor, hass)
+        await hass.async_add_executor_job(process_discovered_service_info_in_executor, hass, vanmoof_bike_uuids)
     except Exception as e:
         _LOGGER.error("Error processing discovered service info: %s", e)
 
