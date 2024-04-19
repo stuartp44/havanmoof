@@ -23,7 +23,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up this integration using UI."""
     if hass.data.get(DOMAIN) is None:
         _LOGGER.info("Starting up VanMoof integration")
-    await process_discovered_service_info(hass, vanmoof_bike_uuids)
+    await process_discovered_service_info(hass)
     # Perform any additional setup here
     return True
 
