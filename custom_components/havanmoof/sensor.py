@@ -1,38 +1,26 @@
-"""Platform for sensor integration."""
-from __future__ import annotations
+"""Platform for typical sensor integration."""
+from homeassistant.helpers.entity import Entity
 
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-    SensorStateClass,
-)
-from homeassistant.const import UnitOfTemperature
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+class BikeBatterySensor(Entity):
+    def __init__(self, hass, bike_data):
+        self._hass = hass
+        self._bike_data = bike_data
 
+    @property
+    def name(self):
+        return f"{self._bike_data['name']} Battery Level"
 
-def setup_platform(
-    hass: HomeAssistant,
-    config: ConfigType,
-    add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None
-) -> None:
-    """Set up the sensor platform."""
-    add_entities([ExampleSensor()])
+    @property
+    def unique_id(self):
+        return f"{self._bike_data['id']}_battery"
 
+    @property
+    def state(self):
+        return self._bike_data.get('battery_level')
 
-class ExampleSensor(SensorEntity):
-    """Representation of a Sensor."""
+    @property
+    def unit_of_measurement(self):
+        return "%"
 
-    _attr_name = "Example Temperature"
-    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-    _attr_device_class = SensorDeviceClass.TEMPERATURE
-    _attr_state_class = SensorStateClass.MEASUREMENT
-
-    def update(self) -> None:
-        """Fetch new state data for the sensor.
-
-        This is the only method that should fetch new data for Home Assistant.
-        """
-        self._attr_native_value = 23
+    async def async_update(self):
+        pass
