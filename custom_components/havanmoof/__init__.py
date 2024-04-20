@@ -2,6 +2,7 @@
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import async_add_entities
 from pymoof.tools import retrieve_bikes
 from .binary_sensor import BikePresenceBinarySensor
 from .sensor import BikeBatterySensor
