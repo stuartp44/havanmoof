@@ -10,34 +10,17 @@ class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
         if user_input is not None:
-            # Validate the user input here if needed
             username = user_input.get("username")
             password = user_input.get("password")
 
-            # Retrieve encryption key
             bikes = await asyncio.to_thread(retrieve_bikes.query, username, password)
 
             if bikes:
-                for bike in bikes:
-                    encryption_key = bike["key"]["encryptionKey"]
-                    user_key_id = bike["key"]["userKeyId"]
-                    frameNumber = bike["frameNumber"]
-                    uuid = bike["macAddress"].replace(":", "").lower(),
-
-                    bike_data = {
-                        "encryption_key": encryption_key,
-                        "user_key_id": user_key_id,
-                        "frameNumber": frameNumber,
-                        "uuid": uuid
-                    }
-                    
-                # Create entry for the bike
-                return self.async_create_entry(title="VanMoof Integration", data=bike_data)
+                return self.async_create_entry(title="VanMoof Bike Integration", data={"username": username, "password": password})
             else:
-                # Unable to retrieve encryption key
                 return self.async_show_form(
                     step_id="user",
-                    errors={"base": "Unable to retrieve bikes. Please check your credentials and try again."},
+                    errors={"base": "Unable to retrieve bikes or no bikes exist in your account. Please check your credentials and try again. "},
                     data_schema=vol.Schema({
                         vol.Required("username"): str,
                         vol.Required("password"): str,
