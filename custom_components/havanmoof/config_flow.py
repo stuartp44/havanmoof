@@ -2,6 +2,7 @@
 import voluptuous as vol
 from homeassistant import config_entries
 from pymoof.tools import retrieve_bikes
+from .const import DOMAIN
 import asyncio
 
 class VanMoofFlowHandler(config_entries.ConfigFlow, domain="vanmoof"):

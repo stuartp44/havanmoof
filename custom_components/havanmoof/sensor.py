@@ -1,5 +1,11 @@
 """Platform for typical sensor integration."""
 from homeassistant.helpers.entity import Entity
+from .const import DOMAIN
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
+)
 
 class BikeBatterySensor(Entity):
     def __init__(self, hass, bike_data):

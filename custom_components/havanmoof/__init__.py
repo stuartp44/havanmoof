@@ -7,8 +7,8 @@ from pymoof.tools import retrieve_bikes
 from .binary_sensor import BikePresenceBinarySensor
 from .sensor import BikeBatterySensor
 import logging
+from .const import DOMAIN
 
-DOMAIN = "havanmoof"
 _LOGGER = logging.getLogger(__name__)
 
 # Define the VanMoof UUIDs
@@ -18,11 +18,7 @@ vanmoof_bikes_uuids = {
     "SX1":"6acb5520-e631-4069-944d-b8ca7598ad50",
 }
 
-async def async_setup(hass: HomeAssistant, config: ConfigEntry):                            
-    """Setting up this integration using YAML is not supported."""
-    return True
-
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, add_entities: AddEntitiesCallback):
     username = entry.data.get('username')
     password = entry.data.get('password')
     bikes = await hass.async_add_executor_job(retrieve_bikes.query, username, password)
@@ -35,12 +31,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     binary_sensors = []
     for bike in bikes:
         binary_sensors.append(BikePresenceBinarySensor(hass, bike))
-    async_add_entities(binary_sensors)
+    add_entities(binary_sensors)
     
     sensors = []
     for bike in bikes:
         sensors.append(BikeBatterySensor(hass, bike))
-    async_add_entities(sensors)
+    add_entities(sensors)
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
