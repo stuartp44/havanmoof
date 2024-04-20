@@ -17,13 +17,13 @@ vanmoof_bikes_uuids = {
     "SX1":"6acb5520-e631-4069-944d-b8ca7598ad50",
 }
 
-async def async_setup(hass: HomeAssistant, config: ConfigEntry):
+async def async_setup(hass: HomeAssistant, config: ConfigEntry):                            
     """Setting up this integration using YAML is not supported."""
     return True
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
-    username = ConfigEntry.data.get('username')
-    password = ConfigEntry.data.get('password')
+    username = entry.data.get('username')
+    password = entry.data.get('password')
     bikes = await hass.async_add_executor_job(retrieve_bikes.query, username, password)
     
     """Set up this integration using UI."""
