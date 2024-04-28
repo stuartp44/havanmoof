@@ -1,0 +1,6 @@
+# Define the VanMoof UUIDs
+vanmoof_bikes_uuids = {
+    "SX3":"6acc5540-e631-4069-944d-b8ca7598ad50",
+    "SX1/SX2":"8e7f1a50-087a-44c9-b292-a2c628fdd9aa",
+    "SX1":"6acb5520-e631-4069-944d-b8ca7598ad50",
+}

@@ -1,42 +1,38 @@
 """VanMoof Bike Home Assistant"""
-
+from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from pymoof.tools import retrieve_bikes
-from .binary_sensor import BikePresenceBinarySensor
-from .sensor import BikeBatterySensor
+from homeassistant.const import (
+    Platform,
+)
 import logging
-from .const import DOMAIN
+from .const import DOMAIN, CONF_SCAN_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BINARY_SENSOR]
 
-# Define the VanMoof UUIDs
-vanmoof_bikes_uuids = {
-    "SX3":"6acc5540-e631-4069-944d-b8ca7598ad50",
-    "SX1/SX2":"8e7f1a50-087a-44c9-b292-a2c628fdd9aa",
-    "SX1":"6acb5520-e631-4069-944d-b8ca7598ad50",
-}
-
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, add_entities: AddEntitiesCallback):
-    username = entry.data.get('username')
-    password = entry.data.get('password')
-    bikes = await hass.async_add_executor_job(retrieve_bikes.query, username, password)
-    
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up this integration using UI."""
+    hass.data.setdefault(DOMAIN, {})
+
+    coordinator = VanMoofCoordinator(hass, entry)
+
+    await coordinator.async_refresh()
+    
+    if not coordinator.last_update_success:
+        raise ConfigEntryNotReady
+
+    hass.data[DOMAIN][entry.entry_id] = coordinator
+    
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    
     if hass.data.get(DOMAIN) is None:
         _LOGGER.info("Starting up VanMoof integration")
 
-    # Create binary sensors for presence detection
-    binary_sensors = []
-    for bike in bikes:
-        binary_sensors.append(BikePresenceBinarySensor(hass, bike))
-    add_entities(binary_sensors)
-    
-    sensors = []
-    for bike in bikes:
-        sensors.append(BikeBatterySensor(hass, bike))
-    add_entities(sensors)
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
@@ -48,23 +44,43 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Remove a config entry."""
     # Perform any additional cleanup here
     return True
+        
+class VanMoofCoordinator(DataUpdateCoordinator):
+    """Data update coordinator."""
 
-async def discover_bikes(hass):
-    """Process discovered Bluetooth service info."""
-    try:
-        await hass.async_add_executor_job(discover_bikes_executor, hass, vanmoof_bikes_uuids)
-    except Exception as e:
-        _LOGGER.error("Error processing discovered service info: %s", e)
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        """Initialize the coordinator."""
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=timedelta(
+                minutes=CONF_SCAN_INTERVAL
+            ),
+            username=entry.data.get("username"),
+            password=entry.data.get("password"),
+        )
+        self._entry = entry
 
-def discover_bikes_executor(hass, vanmoof_bikes_uuids):
-    """Process discovered Bluetooth service info in a separate thread."""
-    try:
-        service_infos = hass.components.bluetooth.async_discovered_service_info(hass, connectable=True)
-        for service_info in service_infos:
-            # Check if any of the service UUIDs are in the VanMoof UUIDs map
-            for model, uuid in vanmoof_bikes_uuids.items():
-                if uuid in service_info.service_uuids:
-                    _LOGGER.info("Discovered VanMoof Bike: Model=%s, UUIDs=%s, Address=%s, RSSI=%s",
-                                model, service_info.service_uuids, service_info.address, service_info.rssi)
-    except Exception as e:
-        _LOGGER.error("Error processing discovered service info: %s", e)
+
+    @property
+    def entry_id(self) -> str:
+        """Return entry ID."""
+        return self._entry.entry_id
+    
+    # define username and password as properties
+    @property
+    def username(self) -> str:
+        """Return username."""
+        return self._entry.data.get("username")
+    
+    @property
+    def password(self) -> str:
+        """Return password."""
+        return self._entry.data.get("password")
+    
+
+    async def _async_get_bikes(self) -> dict:
+        """Fetch the latest data from the source."""
+        bikes = await self.hass.async_add_executor_job(retrieve_bikes.query, self.username, self.password)
+        return bikes

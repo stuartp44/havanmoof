@@ -1,5 +1,6 @@
 """Platform for binary sensor integration."""
 from homeassistant.helpers.entity import Entity
+from .const import DOMAIN
 
 class BikePresenceBinarySensor(Entity):
     def __init__(self, hass, bike_data):
