@@ -49,13 +49,13 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
     # If your PyPI package is not built with async, pass your methods
     # to the executor:
-    logging.info("Getting key from vanmoof servers")
+    _LOGGER.info("Getting key from vanmoof servers")
     bikes = await hass.async_add_executor_job(
         retrieve_bikes.query, data["username"], data["password"]
     )
 
     for bike in bikes:
-        logging.error(bike)
+        _LOGGER.info(bike)
     #
 
     # If you cannot connect:
