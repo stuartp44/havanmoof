@@ -13,7 +13,7 @@
   "integration_type": "device",
   "iot_class": "local_polling",
   "requirements": [
-    "git+https://github.com/stuartp44/pymoof.git@main#pymoof==0.0.4"
+    "git+https://github.com/stuartp44/pymoof.git@main#pymoof==0.0.5"
   ],
   "version": "0.0.0"
 }
