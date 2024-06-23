@@ -27,6 +27,7 @@ async def async_setup_entry(
         _LOGGER.error("Error setting up Vanmoof platform for sensor: %s", e)
         return False
 
+    # If we get bikes, add the sensors
     if bikes:
         _LOGGER.info("Found %s bikes on VanMoof API", len(bikes))
         sensors = []
