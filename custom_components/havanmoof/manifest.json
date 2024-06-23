@@ -1,6 +1,7 @@
 {
   "domain": "vanmoof_bike",
   "name": "VanMoof Bike",
+  "version": "1.0.0",
   "bluetooth": [
     {
       "service_data_uuid": "6acc5540-e631-4069-944d-b8ca7598ad50"
