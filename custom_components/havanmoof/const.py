@@ -1,3 +1,3 @@
-"""Constants for the VanMoof Bike integration."""
-DOMAIN = "havanmoof"
-CONF_SCAN_INTERVAL = 30
+"""Constants for the Vanmoof Bike integration."""
+
+DOMAIN = "vanmoof_bike"
