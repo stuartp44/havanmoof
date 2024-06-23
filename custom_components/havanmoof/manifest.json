@@ -1,7 +1,6 @@
 {
   "domain": "vanmoof_bike",
   "name": "VanMoof Bike",
-  "version": "1.0.0",
   "bluetooth": [
     {
       "service_data_uuid": "6acc5540-e631-4069-944d-b8ca7598ad50"
@@ -11,11 +10,9 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://www.home-assistant.io/integrations/vanmoof_bike",
-  "homekit": {},
   "iot_class": ["local_polling", "cloud_polling"],
   "requirements": [
     "git+https://github.com/stuartp44/pymoof.git@main#pymoof==0.0.4"
   ],
-  "ssdp": [],
-  "zeroconf": []
+  "version": "1.0.0",
 }
