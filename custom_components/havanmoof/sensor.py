@@ -1,6 +1,6 @@
 import logging
 
-from pymoof.tools import retrieve_bikes, discover_bike
+from pymoof.tools import retrieve_bikes, discover_bikes
 
 from homeassistant.components import bluetooth
 from homeassistant.config_entries import ConfigEntry
@@ -54,7 +54,7 @@ async def async_setup_entry(
 async def check_and_discover_bikes(hass):
     """Check and discover bikes using Bluetooth."""
     scanner = bluetooth.async_get_scanner(hass)
-    discovered_bikes = await discover_bike.query(scanner)
+    discovered_bikes = await discover_bikes.query(scanner)
     return discovered_bikes
 
 class VanmoofBatterySensor(Entity):
