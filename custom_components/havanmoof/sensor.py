@@ -27,14 +27,16 @@ async def async_setup_entry(
         _LOGGER.error("Error setting up Vanmoof platform for sensor: %s", e)
         return False
 
-    _LOGGER.info("Found %s bikes on VanMoof API", len(bikes))
+    if bikes:
+        _LOGGER.info("Found %s bikes on VanMoof API", len(bikes))
+        sensors = []
+        for bike in bikes:
+            sensors.append(VanmoofBatterySensor(bike, entry))
+            sensors.append(VanmoofPresenceSensor(bike, entry))
 
-    sensors = []
-    for bike in bikes:
-        sensors.append(VanmoofBatterySensor(bike, entry))
-        sensors.append(VanmoofPresenceSensor(bike, entry))
-
-    async_add_entities(sensors)
+        async_add_entities(sensors)
+    else:
+        _LOGGER.info("No bikes found on VanMoof API")
 
     # Get all advertised bikes using bluetooth
     try:
