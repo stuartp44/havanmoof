@@ -36,14 +36,15 @@ async def async_setup_entry(
 
     async_add_entities(sensors)
 
-    # Get all advertisted bikes using bluetooth
+    # Get all advertised bikes using bluetooth
     try:
-        bluetooth_descovered_bikes = await check_and_discover_bikes(hass)
+        bluetooth_discovered_bikes = await check_and_discover_bikes(hass)
     except Exception as e:
         _LOGGER.error("Error setting up Vanmoof platform for sensor: %s", e)
+        bluetooth_discovered_bikes = []
 
-    if bluetooth_descovered_bikes:
-        _LOGGER.info("Found %s bikes using bluetooth", len(bluetooth_descovered_bikes))
+    if bluetooth_discovered_bikes:
+        _LOGGER.info("Found %s bikes using bluetooth", len(bluetooth_discovered_bikes))
     else:
         _LOGGER.info("No bikes found using bluetooth")
 
