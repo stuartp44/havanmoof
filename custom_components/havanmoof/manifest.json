@@ -10,9 +10,10 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://www.home-assistant.io/integrations/vanmoof_bike",
+  "integration_type": "device",
   "iot_class": "local_polling",
   "requirements": [
     "git+https://github.com/stuartp44/pymoof.git@main#pymoof==0.0.4"
   ],
-  "version": "0.0.0",
+  "version": "0.0.0"
 }
